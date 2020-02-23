@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Color - A-Frame</title>
+        <meta name="description" content="Hello, WebVR! - A-Frame">
+        <!--  note we are using 0.9.1 as most recent -->
+        <script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
+    </head>
+    <body>
+        <h1>The controller must pick a color before you can make a selection</h1>
+
+        <a-scene>
+            <!-- camera group -->
+            <a-entity position="0 0 5" rotation="0 0 0">
+                <a-entity camera>                                           
+                    <a-entity   cursor="rayOrigin:mouse; fuse:false;"
+                                raycaster="far:20; interval:100; objects:.clickable;">
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+
+            <a-entity id="red" class="clickable" 
+                geometry="primitive:plane; width:3; height:5; " 
+                position="-3 -5 0" 
+                scale="1 1 1" 
+                rotation="0 0 0" 
+                material="color:#FF0000;" 
+                red-component=""></a-entity>
+
+            <a-entity id="green" class="clickable" 
+                geometry="primitive:plane; width:3; height:5; " 
+                position="3 -5 0" 
+                scale="1 1 1" 
+                rotation="0 0 0" 
+                material="color:#00FF00;" 
+                green-component=""></a-entity>
+
+            <a-entity id="blue" class="clickable" 
+                geometry="primitive:plane; width:3; height:5; " 
+                position="0 -5 0" 
+                scale="1 1 1" 
+                rotation="0 0 0" 
+                material="color:#0000FF;" 
+                blue-component=""></a-entity>
+
+            <a-entity id="correct"
+                geometry="primitve:box; radius:1;"
+                position="0 1 0"
+                visible="false"
+                material="color:#00FF00" ></a-entity>
+
+                <a-entity id="incorrect"
+                geometry="primitve:box; radius:1;"
+                position="0 1 0"
+                visible="false"
+                material="color:#FF0000" ></a-entity>
+
+        </a-scene>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            // schema: {
+            //     colorStr: {type:'string', default:'rgb(0,0,0)'}
+            // },
+
+            let socket = io();
+
+            //default connect event
+            socket.on('connect', function() {
+                console.log("connected!");
+            });
+
+            socket.on('color_change', function(data) {
+                //create rgb color string for css
+                let colorStr = 'rgb(' + data.r + ',' + data.g + ',' + data.b + ')';
+                console.log("color received: " + colorStr);
+
+                if(data.r > data.g && data.r > data.b){
+
+                    document.querySelector('#red').addEventListener('click', function() {
+                        console.log("Red Correct");
+                        document.getElementById("correct").setAttribute('visible', 'true');
+                        location.reload(true);
+                    });    
+
+                    document.querySelector('#green').addEventListener('click', function() {
+                        console.log("Green Incorrect");
+                        document.getElementById("incorrect").setAttribute('visible', 'true');
+                        location.reload(true);
+                    });
+
+                    document.querySelector('#blue').addEventListener('click', function() {
+                        console.log("Blue Incorrect");
+                        document.getElementById("incorrect").setAttribute('visible', 'true');
+                        location.reload(true);
+                    });
+                }
+                else if(data.g > data.r && data.g > data.b){
+
+                    document.querySelector('#red').addEventListener('click', function() {
+                        console.log("Red Incorrect");
+                        document.getElementById("incorrect").setAttribute('visible', 'true');
+                        location.reload(true);
+                    });    
+
+                    document.querySelector('#green').addEventListener('click', function() {
+                        console.log("Green Correct");
+                        document.getElementById("correct").setAttribute('visible', 'true');
+                        location.reload(true);
+                    });
+
+                    document.querySelector('#blue').addEventListener('click', function() {
+                        console.log("Blue Incorrect");
+                        document.getElementById("incorrect").setAttribute('visible', 'true');
+                        location.reload(true);
+                    });
+                }
+                else if(data.b > data.r && data.b > data.g){
+
+                    document.querySelector('#red').addEventListener('click', function() {
+                        console.log("Red Incorrect");
+                        document.getElementById("incorrect").setAttribute('visible', 'true');
+                        location.reload(true);
+                    });    
+
+                    document.querySelector('#green').addEventListener('click', function() {
+                        console.log("Green Incorrect");
+                        document.getElementById("incorrect").setAttribute('visible', 'true');
+                        location.reload(true);
+                    });
+
+                    document.querySelector('#blue').addEventListener('click', function() {
+                        console.log("Blue Correct");
+                        document.getElementById("correct").setAttribute('visible', 'true');
+                        location.reload(true);
+                    });
+                }
+            });
+
+            
+
+        </script>
+    </body>
+</html>

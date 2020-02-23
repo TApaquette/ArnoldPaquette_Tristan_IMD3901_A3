@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Controller - A-Frame</title>
+        <meta name="description" content="Hello, WebVR! - A-Frame">
+        <!--  note we are using 0.9.1 as most recent -->
+        <script src="https://aframe.io/releases/1.0.3/aframe.min.js"></script>
+
+        <script src="js/button_red.js"></script>
+        <script src="js/button_blue.js"></script>
+        <script src="js/button_yellow.js"></script>
+        <script src="js/button_green.js"></script>
+    </head>
+    <body>
+        
+        <a-scene>
+            <!-- camera group -->
+            <a-entity position="0 0 5" rotation="0 0 0">
+                <a-entity camera>                                           
+                    <a-entity   cursor="rayOrigin:mouse; fuse:false;"
+                                raycaster="far:20; interval:100; objects:.clickable;">
+                    </a-entity>
+                </a-entity>
+            </a-entity>
+
+            <!-- some very nice color buttons -->
+            <a-entity id="red" class="clickable" 
+                geometry="primitive:plane; width:10; height:10; " 
+                position="-5 5 0" 
+                scale="1 1 1" 
+                rotation="0 0 0" 
+                material="color:#FF0000;" 
+                red-component=""></a-entity>
+
+            <a-entity id="green" class="clickable" 
+                geometry="primitive:plane; width:10; height:10; " 
+                position="5 5 0" 
+                scale="1 1 1" 
+                rotation="0 0 0" 
+                material="color:#00FF00;" 
+                green-component=""></a-entity>
+
+            <a-entity id="blue" class="clickable" 
+                geometry="primitive:plane; width:20; height:10; " 
+                position="0 -5 0" 
+                scale="1 1 1" 
+                rotation="0 0 0" 
+                material="color:#0000FF;" 
+                blue-component=""></a-entity>
+
+        </a-scene>
+
+        <!-- scripts go to bottom if you want them to execute AFTER the rest of the web page renders -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            let socket = io();
+
+            //default connect event
+            socket.on('connect', function() {
+                console.log("connected!");
+            });
+
+            //let's send some events to the server to pass on. Programmatic telephone game!
+            //querySelector() is a more modern and versatile function of getElementById()
+            //#name or class
+            //.name for classes
+            //etc.
+            //https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector 
+            //note that querySelector can also be used on elements so that you only search for their children
+            //instead of all elements within teh "document"
+            document.querySelector('#red').addEventListener('click', function() {
+                socket.emit('red');
+            });
+
+            document.querySelector('#green').addEventListener('click', function() {
+                socket.emit('green');
+            });
+
+            document.querySelector('#blue').addEventListener('click', function() {
+                socket.emit('blue');
+            });
+
+        </script>
+    </body>
+</html>
